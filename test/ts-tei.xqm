@@ -9,6 +9,11 @@ declare variable $ttei:CFG := map {
   "apply-children": function($config as map(*), $node as node(), $content) { $content }
 };
 
+(:~ The break behaviour is reached with a type ("page", "line") and also WITHOUT
+    one: an ODD may declare <model behaviour="break"/> with no type parameter,
+    which is how a plain <w:br/> in a Word document is mapped. :)
+declare variable $ttei:BREAK-WITHOUT-TYPE := ();
+
 declare
   %test:assertTrue
 function ttei:paragraph-tei-ns() as xs:boolean {
