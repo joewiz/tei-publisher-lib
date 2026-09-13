@@ -68,3 +68,30 @@ function ted:finish-returns-unchanged-without-head() as xs:boolean {
   let $res := pmf:finish($ted:CFG, $tei)
   return deep-equal($res, $tei)
 };
+
+declare
+  %test:assertTrue
+function ted:finish-keeps-angle-brackets-in-text() as xs:boolean {
+  let $res := pmf:finish($ted:CFG, $ted:ANGLE-CODES)
+  return
+    string-join($res//tei:p ! string(.), '|')
+      = string-join($ted:ANGLE-CODES//tei:p ! string(.), '|')
+};
+
+declare
+  %test:assertTrue
+function ted:finish-keeps-angle-brackets-inside-inline-elements() as xs:boolean {
+  (: pmf:combine merges adjacent inline elements; the text it carries across
+     must survive the merge :)
+  let $res := pmf:finish($ted:CFG, $ted:ANGLE-CODES)
+  return contains(string($res//tei:hi), '<m>')
+};
+
+declare
+  %test:assertTrue
+function ted:finish-keeps-text-between-two-codes() as xs:boolean {
+  (: the span between the first "<" and the last ">" of a text node is prose, not
+     markup, and losing it silently corrupts the sentence :)
+  let $res := pmf:finish($ted:CFG, $ted:ANGLE-CODES)
+  return exists($res//tei:p[contains(., '1981<n>1988 and 1977<m>1980')])
+};
