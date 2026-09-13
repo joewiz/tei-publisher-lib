@@ -205,7 +205,7 @@ declare function pmf:omit($config as map(*), $node as node(), $class as xs:strin
     ()
 };
 
-declare function pmf:break($config as map(*), $node as node(), $class as xs:string+, $content, $type as xs:string, $label as item()*) {
+declare function pmf:break($config as map(*), $node as node(), $class as xs:string+, $content, $type as xs:string?, $label as item()*) {
     switch($type)
         case "page" return
             <pb xmlns="http://www.tei-c.org/ns/1.0">{pmf:apply-children($config, $node, $label)}</pb>

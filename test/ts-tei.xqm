@@ -75,3 +75,15 @@ function ttei:cell-adds-cols-attribute() as xs:boolean {
   let $res := pmf:cell($ttei:CFG, <n/>, ("c"), 'X', (), map { 'cols': 3 })
   return namespace-uri-from-QName(node-name($res)) = 'http://www.tei-c.org/ns/1.0' and local-name($res)='cell' and $res/@cols = '3'
 };
+
+declare
+  %test:assertTrue
+function ttei:break-without-type-is-lb() as xs:boolean {
+  (: an ODD may declare <model behaviour="break"/> with no type parameter, which
+     is how a plain <w:br/> is mapped; the generator can only bind that model to
+     this function if $type is optional, and without the binding the break is
+     dropped :)
+  let $res := pmf:break($ttei:CFG, <n/>, ("c"), (), $ttei:BREAK-WITHOUT-TYPE, ())
+  return local-name($res) = 'lb'
+    and namespace-uri-from-QName(node-name($res)) = 'http://www.tei-c.org/ns/1.0'
+};
