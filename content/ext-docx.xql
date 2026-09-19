@@ -84,8 +84,14 @@ declare %private function pmf:wrap-list($items as element()*) {
         return
             let $nested :=
                 pmf:get-following-nested($item/following-sibling::*, (), $item/@tf:level)
+            (: @n carries the list marker. pmf:listItem records it from the numbering
+               definition Word keeps in numbering.xml (lvlText, e.g. "-" for a dash
+               bullet), but rebuilding the item here dropped the attribute, so the
+               marker the editor typed was lost with nothing able to recover it.
+               It has to be the first thing in the constructor: an attribute cannot
+               follow content, and the indentation before it is a text node. :)
             return (
-                <item xmlns="http://www.tei-c.org/ns/1.0">
+                <item xmlns="http://www.tei-c.org/ns/1.0">{ $item/@n }
                     <p>{ $item/node() }</p>
                     {
                         if ($nested) then
